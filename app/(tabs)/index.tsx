@@ -1,98 +1,82 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+// Entry object (TypeScript Type Alias / Type Definition in React Native)
+type Entry = {
+  id: string;
+  calories: string;
+  timestamp: string;
+}
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  //Logic component of homescreen
+  //calorie input (expects an empty string)
+  const [calorieInput, setCalorieInput] = useState('');
+  //entries input (expects an array of entry objects)
+  const [entries, setEntries] = useState<Entry[]>([]);
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const addEntry = () => {
+    //if no calories entered, do not create a new entry
+    if (calorieInput.trim() === '') return;
+
+    const newEntry: Entry = {
+      //id = date in string form
+      id: Date.now().toString(),
+      // directly assign value fromo calorieInput useState
+      calories: calorieInput,
+      //calculate timestamp
+      timestamp: new Date().toLocaleTimeString(),
+    };
+
+    //after data is parsed from useStates, update entries with the new entry and all others
+    setEntries([newEntry, ...entries]);
+    //same with calorieinput
+    setCalorieInput('');
+  };
+
+  //UI component of homescreen
+  return (
+    <View style={styles.container}>
+      {/* Title */}
+      <Text style={styles.title}>Log an Entry</Text>
+
+      {/* Calorie Input */}
+      <TextInput style={styles.input} placeholder="Calories" keyboardType="numeric" value={calorieInput} onChangeText={setCalorieInput}/>
+
+      {/* Add Entry Button */}
+      <TouchableOpacity style={styles.button} onPress={addEntry}>
+        <Text style={styles.buttonText}>Add Entry</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.subtitle}>Today's Entries</Text>
+
+      {/* Entry list 
+      *   Pull data from entries useState and display it in a FlatList
+      *   If no entries exist, display a message saying "No entries yet."
+      */}
+      <FlatList
+        data={entries}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.entryRow}>
+            <Text>{item.calories} cal</Text>
+            <Text style={styles.timestamp}>{item.timestamp}</Text>
+          </View>
+        )}
+        ListEmptyComponent={<Text style={styles.empty}>No entries yet.</Text>}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  container: {flex: 1, paddingTop: 60, paddingHorizontal: 20, backgroundColor: '#fff' },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
+  subtitle: { fontSize: 18, fontWeight: '600', marginTop: 24, marginBottom: 8 },
+  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, fontSize: 16 },
+  button: { backgroundColor: '#2563eb', borderRadius: 8, padding: 12, marginTop: 12, alignItems: 'center' },
+  buttonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  entryRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#eee' },
+  timestamp: { color: '#888' },
+  empty: { color: '#888', marginTop: 12 },
 });
