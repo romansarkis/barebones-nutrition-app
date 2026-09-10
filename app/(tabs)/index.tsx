@@ -1,6 +1,8 @@
 import { useEntries } from '@/context/EntriesContext';
-import { useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { getWeeklyCalorieData } from '@/utils/chartData';
+import { useMemo, useState } from 'react';
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { BarChart } from 'react-native-chart-kit';
 
 export default function HomeScreen() {
   const [foodInput, setFoodInput] = useState('');
@@ -9,7 +11,12 @@ export default function HomeScreen() {
   const [carbsInput, setCarbsInput] = useState('');
   const [fatInput, setFatInput] = useState('');
 
-    const { entries, addEntry } = useEntries();
+  const { entries, addEntry } = useEntries();
+  
+  // useMemo to compute weekly calorie data only when entries change, improving performance
+  const weeklyData = useMemo(() => getWeeklyCalorieData(entries), [entries]);
+
+const { width: screenWidth } = useWindowDimensions();
 
   const handleAddEntry = () => {
     //if no calories entered, do not create a new entry
@@ -56,6 +63,26 @@ export default function HomeScreen() {
         <Text style={styles.buttonText}>Add Entry</Text>
       </TouchableOpacity>
 
+      {/* Chart Section */}
+      <BarChart
+        data={weeklyData}
+        width={screenWidth - 32} // account for screen padding
+        height={220}
+        yAxisLabel=""
+        yAxisSuffix=" cal"
+        chartConfig={{
+          backgroundColor: '#ffffff',
+          backgroundGradientFrom: '#ffffff',
+          backgroundGradientTo: '#ffffff',
+          decimalPlaces: 0,
+          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+        }}
+        style={{
+          borderRadius: 8,
+        }}
+      />
+
       <Text style={styles.subtitle}>Today's Entries</Text>
 
       {/* Entry list 
@@ -78,6 +105,8 @@ export default function HomeScreen() {
         )}
         ListEmptyComponent={<Text style={styles.empty}>No entries yet.</Text>}
       />
+
+      
     </View>
   );
 }
