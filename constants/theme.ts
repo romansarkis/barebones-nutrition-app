@@ -25,6 +25,15 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
   },
+  scarlet: '#BB0000',        // full OSU scarlet — reserve for primary actions (Add Entry, etc.)
+  scarletMuted: '#D46A6A',   // softened/desaturated — good for chart bars, secondary accents
+  scarletTint: '#F3D9D9',    // very light wash — good for selected states, subtle backgrounds
+  gray: '#6E6E73',           // OSU's "gray" companion color, for secondary text/icons
+  grayLight: '#E5E5E7',      // borders, gridlines, unselected states
+  background: '#FAFAFA',
+  cardBackground: '#FFFFFF',
+  textPrimary: '#1C1C1E',
+  textSecondary: '#6E6E73',
 };
 
 export const Fonts = Platform.select({

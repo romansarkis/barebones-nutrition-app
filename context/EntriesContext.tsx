@@ -19,6 +19,7 @@ type EntriesContextType = {
     addEntry: (food: string, calories: number, protein: number, carbs: number, fat: number) => void;
     removeEntry: (id: string) => void;
     updateEntry: (id: string, updates: Partial<Omit<Entry, 'id'>>) => void;
+    loadSampleData: (entries: Entry[]) => void;
 }
 
 // our entries context, declared without a default value, will be provided by the EntriesProvider component
@@ -28,6 +29,13 @@ const EntriesContext = createContext<EntriesContextType | undefined>(undefined);
 export function EntriesProvider({ children }: {children: ReactNode}) {
     // useState hook to manage the entries state, intialized as an empty array of Entry objects
     const [entries, setEntries] = useState<Entry[]>([]);
+
+    // Replaces all current entries with a provided set.
+    // Used for loading demo/seed data — bypasses addEntry's normal
+    // "always dated today" behavior so we can backdate entries.
+    const loadSampleData = (sampleEntries: Entry[]) => {
+    setEntries(sampleEntries);
+    };
 
     // addEntry function within our provider component, takes food and calories as arguments, creates a new entry object with a unique id and current data, and updates the entries state with the new entry
     const addEntry = (food: string, calories: number, protein: number, carbs: number, fat: number) => {
@@ -54,7 +62,7 @@ export function EntriesProvider({ children }: {children: ReactNode}) {
     }
 
     return (
-        <EntriesContext.Provider value={{ entries, addEntry, removeEntry, updateEntry }}>
+        <EntriesContext.Provider value={{ entries, addEntry, removeEntry, updateEntry, loadSampleData }}>
             {children}
         </EntriesContext.Provider>
     );
