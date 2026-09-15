@@ -1,50 +1,57 @@
-# Welcome to your Expo app 👋
+# Ohio State Macro App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A lightweight React Native nutrition tracking app built with Expo. Log meals with calorie and macro (protein/carbs/fat) data, see a weekly calorie chart, and review or edit past entries.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Log entries** — food name, calories, and protein/carbs/fat grams
+- **Weekly calorie chart** — bar chart of the last 7 days, built with `react-native-chart-kit`
+- **Today's entries** — quick view of everything logged today, right on the home screen
+- **History screen** — every entry, sorted newest first, with tap-to-edit and delete
+- **Macro breakdown bar** — a compact segmented bar (protein/carbs/fat) next to each history entry, with a color legend
+- **Sample data loader** — a "Load Sample Week" button seeds a full week of entries for demo purposes
 
-   ```bash
-   npm install
-   ```
+## Tech stack
 
-2. Start the app
+- [Expo](https://expo.dev/) (SDK 54) with [expo-router](https://docs.expo.dev/router/introduction/) for file-based navigation
+- React Native + TypeScript
+- `react-native-chart-kit` + `react-native-svg` for the weekly chart
+- React Context (`EntriesContext`) for shared app state — no external state management library
 
-   ```bash
-   npx expo start
-   ```
+## Project structure
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+app/
+  index.tsx          # Home screen — log entry form, weekly chart, today's entries
+  explore.tsx         # History screen — full entry list, edit/delete, macro bars
+context/
+  EntriesContext.tsx  # Shared entry state: addEntry, removeEntry, updateEntry, loadSampleData
+components/
+  MacroBar.tsx         # Segmented protein/carbs/fat visual
+utils/
+  dateUtils.ts         # isToday() — local-time date comparison
+  chartData.ts          # getWeeklyCalorieData() — builds the last 7 days of totals
+  seedData.ts            # generateSampleWeekEntries() — demo data for "Load Sample Week"
+constants/
+  theme.ts              # Colors and shared theming (OSU scarlet palette)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Getting started
 
-## Learn more
+```bash
+npm install
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Scan the QR code with **Expo Go** on your phone, or press `w` to run in a web browser.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Data & persistence
 
-## Join the community
+Entries are held in memory via React Context for the duration of the app session. There is currently no persistent storage (e.g. `AsyncStorage`) — restarting the app clears all entries. This is a known limitation and a planned next step.
 
-Join our community of developers creating universal apps.
+## Known limitations / next steps
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- No persistent storage between app restarts
+- No entry date-editing (entries are timestamped at creation)
+- Weekly chart shows total calories only, not a macro breakdown per day
+- "Load Sample Week" is a demo convenience and can be removed for production use

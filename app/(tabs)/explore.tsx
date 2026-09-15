@@ -1,4 +1,5 @@
 import { MacroBar } from '@/components/MacroBar';
+import { Colors } from '@/constants/theme';
 import { Entry, useEntries } from '@/context/EntriesContext';
 import { useState } from 'react';
 import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -52,6 +53,7 @@ export default function ExploreScreen() {
 
  return (
     <View style={styles.container}>
+      <Text style={styles.appTitle}>Ohio State Nutrition App</Text>
       <Text style={styles.title}>History</Text>
 
       {/*Legend above our flatlist to explain the colors in our macrobars*/}
@@ -121,6 +123,7 @@ export default function ExploreScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 60, paddingHorizontal: 20, backgroundColor: '#fff' },
+  appTitle: { fontSize: 14, fontWeight: '600', color: Colors.scarlet, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
   entryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#eee' },
   food: { fontSize: 16, fontWeight: '500' },

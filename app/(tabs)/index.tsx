@@ -70,6 +70,8 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       {/* Title */}
+      <Text style={styles.appTitle}>Ohio State Nutrition App</Text>
+
       <Text style={styles.title}>Log an Entry</Text>
 
       <TextInput style={styles.input} placeholder="Food name" value={foodInput} onChangeText={setFoodInput} />
@@ -146,6 +148,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 60, paddingHorizontal: 20, backgroundColor: '#fff' },
+  appTitle: { fontSize: 14, fontWeight: '600', color: Colors.scarlet, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
   subtitle: { fontSize: 18, fontWeight: '600', marginTop: 24, marginBottom: 8 },
   input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, fontSize: 16, marginBottom: 8 },
