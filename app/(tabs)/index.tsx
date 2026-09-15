@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 18, fontWeight: '600', marginTop: 24, marginBottom: 8 },
   input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, fontSize: 16, marginBottom: 8 },
   macroRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 8 },
-  macroInput: { flex: 1 },
+  macroInput: { flex: 1, minWidth: 0 },
   button: { backgroundColor: Colors.scarlet, borderRadius: 8, padding: 12, marginTop: 4, alignItems: 'center' },
   buttonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
   food: { fontSize: 16, fontWeight: '500' },

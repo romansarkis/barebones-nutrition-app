@@ -1,3 +1,4 @@
+import { MacroBar } from '@/components/MacroBar';
 import { Entry, useEntries } from '@/context/EntriesContext';
 import { useState } from 'react';
 import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -5,6 +6,9 @@ import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } 
 
 export default function ExploreScreen() {
   const { entries, updateEntry, removeEntry } = useEntries();
+
+  const sortedEntries = [...entries].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
   const [editingEntry, setEditingEntry] = useState<Entry | null>(null);
 
    // local input state for the edit modal
@@ -50,8 +54,24 @@ export default function ExploreScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>History</Text>
 
+      {/*Legend above our flatlist to explain the colors in our macrobars*/}
+      <View style={styles.legend}>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendDot, { backgroundColor: '#eb5449' }]} />
+          <Text style={styles.legendText}>Protein</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendDot, { backgroundColor: '#e6bc4a' }]} />
+          <Text style={styles.legendText}>Carbs</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendDot, { backgroundColor: '#2456e0' }]} />
+          <Text style={styles.legendText}>Fat</Text>
+        </View>
+      </View>
+
       <FlatList
-        data={entries}
+        data={sortedEntries}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.entryRow} onPress={() => openEditModal(item)}>
@@ -61,7 +81,10 @@ export default function ExploreScreen() {
                 {new Date(item.date).toLocaleDateString()} · {new Date(item.date).toLocaleTimeString()}
               </Text>
             </View>
-            <Text style={styles.calories}>{item.calories} cal</Text>
+            <View style={styles.rightSide}>
+              <MacroBar protein={item.protein} carbs={item.carbs} fat={item.fat} />
+              <Text style={styles.calories}>{item.calories} cal</Text>
+            </View>
           </TouchableOpacity>
         )}
         ListEmptyComponent={<Text style={styles.empty}>No entries yet.</Text>}
@@ -114,4 +137,25 @@ const styles = StyleSheet.create({
   cancelText: { color: '#666', fontSize: 16 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 20, paddingBottom: 40 },
+  rightSide: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+  legend: {
+  flexDirection: 'row',
+  gap: 16,
+  paddingHorizontal: 16,
+  paddingBottom: 8,
+},
+legendItem: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: 4,
+},
+legendDot: {
+  width: 8,
+  height: 8,
+  borderRadius: 4,
+},
+legendText: {
+  fontSize: 12,
+  color: '#666', // swap for your OSU gray constant if you have one
+},
 });
