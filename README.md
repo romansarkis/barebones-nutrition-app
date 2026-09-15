@@ -1,4 +1,4 @@
-# Ohio State Macro App
+# Ohio State Nutrition App
 
 A lightweight React Native nutrition tracking app built with Expo. Log meals with calorie and macro (protein/carbs/fat) data, see a weekly calorie chart, and review or edit past entries.
 
